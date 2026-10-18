@@ -1,0 +1,25 @@
+{
+  "name": "@tds/daemon",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "tds": "./src/cli.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "tsx src/cli.ts start --foreground",
+    "start": "tsx src/cli.ts start",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.3.0",
+    "@tds/protocol": "workspace:*",
+    "eventsource": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

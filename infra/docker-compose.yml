@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tds-postgres
+    environment:
+      POSTGRES_USER: tds
+      POSTGRES_PASSWORD: tds_local_dev
+      POSTGRES_DB: tds
+    # 绑 127.0.0.1 而不是所有网卡：BFF 架构下 web 与 server 同机，
+    # 数据库只需本机可达；绑 0.0.0.0 会把数据库暴露给整个局域网。
+    ports:
+      - "127.0.0.1:5433:5432"   # 避开宿主可能的 5432
+    # PG 用 /dev/shm 放共享缓冲；容器默认 64M 偏小，实测 128M 够用。
+    shm_size: 128m
+    restart: unless-stopped
+    volumes:
+      # 显式命名卷：不加 `name:` 时 compose 会用 `<项目名>_tds-pgdata`，
+      # 与 `docker run -v tds-pgdata:...` 起的容器不是同一个卷 —— 换过来
+      # 会拿到一个空卷，数据看起来"丢了"。显式名让两种方式共用同一份数据。
+      - tds-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tds -d tds"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+# 没有 redis：全仓 grep 过，apps/server / apps/web / apps/daemon 的源码里
+# 零引用（只有本文件和根 package.json 的 db:up 提到它）。之前是规划残留。
+
+volumes:
+  tds-pgdata:
+    name: tds-pgdata

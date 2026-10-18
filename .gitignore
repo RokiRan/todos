@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.next/
+.tds/
+*.log
+.env
+.env.local
+.tmp/
+.tmp-win-turn-repo/
+.local/
+.test-tds-home/
+*.tsbuildinfo
+.vitest/
+coverage/
+.DS_Store

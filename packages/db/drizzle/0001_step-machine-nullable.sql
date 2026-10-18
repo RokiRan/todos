@@ -1,0 +1,1 @@
+ALTER TABLE "step" ALTER COLUMN "machine_id" DROP NOT NULL;

@@ -1,0 +1,20 @@
+[Unit]
+Description=TDS Fastify server (todos.dev clone)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tds/apps/server
+EnvironmentFile=/home/ubuntu/tds/.env
+# 必须显式设 PATH。node_modules/.bin/tsx 的 shebang 从 PATH 里解析 `node`，
+# 不设的话会用系统 node（树莓派上是 v20.20.2），而 package.json engines 要求
+# >=22.19.0 —— 版本不符会静默跑在错误解释器上。
+Environment=PATH=/home/ubuntu/.local/node22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/home/ubuntu/tds/apps/server/node_modules/.bin/tsx src/main.ts
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

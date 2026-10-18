@@ -1,0 +1,20 @@
+[Unit]
+Description=TDS Next.js web (todos.dev clone)
+After=network-online.target tds-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/tds/apps/web
+EnvironmentFile=/home/ubuntu/tds/.env
+# 同 tds-server.service：不设 PATH 会跑在系统 node v20 上（engines 要 >=22.19）。
+Environment=PATH=/home/ubuntu/.local/node22/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# 3100 而不是 3000：树莓派上 3000 已被 new-api 容器占用（实测 ss 确认）。
+# 换端口时记得同步改 .env 里的 TDS_CORS_ORIGIN。
+ExecStart=/home/ubuntu/tds/apps/web/node_modules/.bin/next start -p 3100
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
